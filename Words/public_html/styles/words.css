@@ -1,0 +1,17 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Mar 17, 2015, 4:02:55 PM
+    Author     : lasha
+*/
+
+@font-face {
+    font-family: 'bpg_mrgvlovani_caps_2010Rg';
+    src: url('fonts/bpg_mrgvlovani_caps/bpg_mrgvlovani_caps_2010-webfont.eot');
+    src: url('fonts/bpg_mrgvlovani_caps/bpg_mrgvlovani_caps_2010-webfont.eot?#iefix') format('embedded-opentype'), url('fonts/bpg_mrgvlovani_caps/bpg_mrgvlovani_caps_2010-webfont.woff') format('woff'), url('fonts/bpg_mrgvlovani_caps/bpg_mrgvlovani_caps_2010-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}

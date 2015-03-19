@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Words</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="styles/words.css" rel="stylesheet" type="text/css"/>
+        <script src="js/libs/jquery/jquery.js" type="text/javascript"></script>
+        <script src="js/libs/board.js" type="text/javascript"></script>
+        <script src="js/libs/common.js" type="text/javascript"></script>
+        
+        <script type="text/javascript">
+            
+            var board;
+            var canvas;
+            var context;
+            
+            $(document).ready(function() {
+                canvas = document.getElementById("canvas");
+                context = canvas.getContext("2d");                
+                board = new Board(
+                        {
+                            "context": context, 
+                            "width": 800, 
+                            "height": 800, 
+                            "rowCount": 12, 
+                            "delta": 10,
+                            "gameFinished": function(timeElapsed) {
+                                //alert(timeElapsed);
+                            }
+                        });
+
+                $.get( "http://localhost:8080/WebApplication3/webresources/generic/test2", 
+                    function( data ) {
+                        board.FillItems(data.items, data.words);
+                        board.Draw();
+                    });
+                
+                initializeMouseOptions(canvas);
+                $(canvas).mousedown(function(e) {
+                    position = getMouse(e, canvas);
+                    board.StartFrom(position.x, position.y);
+                });
+                $(canvas).mouseup(function(e) {
+                    position = getMouse(e, canvas);
+                    board.EndTo(position.x, position.y);
+                });
+                $(canvas).mousemove(function(e) {
+                    position = getMouse(e, canvas);
+                    board.MoveTo(position.x, position.y);
+                });
+                
+            });
+            
+        </script>
+        
+    </head>
+    <body>
+        <div style="font-family: bpg_mrgvlovani_caps_2010Rg;">.</div>
+        <canvas id="canvas" width="1000" height="800" style="margin:auto; display:block;"></canvas>
+    </body>
+</html>
