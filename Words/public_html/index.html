@@ -20,27 +20,37 @@ and open the template in the editor.
             var canvas;
             var context;
             
-            $(document).ready(function() {
-                canvas = document.getElementById("canvas");
-                context = canvas.getContext("2d");                
+            function StartNewGame() {
+                $("#result").hide();
+                
                 board = new Board(
                         {
                             "context": context, 
-                            "width": 800, 
-                            "height": 800, 
+                            "width": 600, 
+                            "height": 600, 
                             "rowCount": 12, 
-                            "delta": 10,
+                            "delta": 5,
                             "gameFinished": function(timeElapsed) {
-                                //alert(timeElapsed);
+                                ShowResult(timeElapsed)
                             }
                         });
 
-                $.get( "http://localhost:8080/WebApplication3/webresources/generic/test2", 
+                $.get( "https://tsl-games.com:8181/WebApplication3/webresources/generic/test2", 
                     function( data ) {
                         board.FillItems(data.items, data.words);
                         board.Draw();
                     });
-                
+            }
+            
+            function ShowResult(score) {
+                $("#score").html(score);
+                $("#result").show();
+            }
+            
+            $(document).ready(function() {
+                canvas = document.getElementById("canvas");
+                context = canvas.getContext("2d");                
+                StartNewGame();
                 initializeMouseOptions(canvas);
                 $(canvas).mousedown(function(e) {
                     position = getMouse(e, canvas);
@@ -59,9 +69,64 @@ and open the template in the editor.
             
         </script>
         
+        <script>
+          window.fbAsyncInit = function() {
+            FB.init({
+              appId      : '1422121261417292',
+              xfbml      : true,
+              version    : 'v2.2'
+            });
+
+            function onLogin(response) {
+              if (response.status == 'connected') {
+                FB.api('/me?fields=first_name', function(data) {
+                  var welcomeBlock = document.getElementById('fb-welcome');
+                  welcomeBlock.innerHTML = 'Hello, ' + data.first_name + '!';
+                });
+              }
+            }
+
+            FB.getLoginStatus(function(response) {
+              // Check login status on load, and if the user is
+              // already logged in, go directly to the welcome message.
+              if (response.status == 'connected') {
+                onLogin(response);
+              } else {
+                // Otherwise, show Login dialog first.
+                FB.login(function(response) {
+                  onLogin(response);
+                }, {scope: 'user_friends, email'});
+              }
+            });
+          };
+
+          (function(d, s, id){
+             var js, fjs = d.getElementsByTagName(s)[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement(s); js.id = id;
+             js.src = "//connect.facebook.net/en_US/sdk.js";
+             fjs.parentNode.insertBefore(js, fjs);
+           }(document, 'script', 'facebook-jssdk'));
+        </script>        
+        
     </head>
+    
     <body>
-        <div style="font-family: bpg_mrgvlovani_caps_2010Rg;">.</div>
-        <canvas id="canvas" width="1000" height="800" style="margin:auto; display:block;"></canvas>
+        <h4 style="font-family: bpg_mrgvlovani_caps_2010Rg; margin:4px 0px;" id="fb-welcome"></h4>
+        <canvas id="canvas" width="730" height="600" style="margin:auto; display:block;"></canvas>
+        <div id="result" style="display: none; position: absolute; left: 0px; top: 0px; width: 100%; height:100%; ">
+            <div style="position: relative; width: 100%; height:100%;">
+                <div style="width: 100%; height:100%; background: silver; opacity: 0.6; z-index: 1;">
+                </div>
+                <div style="position: absolute; top:250px; left:50%; margin-left: -100px; 
+                     height: 100px; width: 200px; z-index: 2; background: white;">
+                    <div style="text-align: center; margin-top: 20px;">Your Time is</div>
+                    <div id="score" style="text-align: center">0</div>
+                    <div style="text-align: center;">
+                        <input type="button" value="Start new Game" onclick="StartNewGame()" />
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

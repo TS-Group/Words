@@ -8,7 +8,7 @@ var Board = function(params) {
     this.columnCount = params.rowCount;
     this.cellLength = (params.width - 2 * params.delta) / params.rowCount;
     this.delta = params.delta;
-    this.ratio = this.cellLength / 100;
+    this.ratio = this.cellLength / 70;
     this.symbols = getAvailableSymbols(this.ratio);
     this.symbolIndexes = getSymbols();
     this.gameFinished = params.gameFinished;
@@ -19,7 +19,7 @@ var Board = function(params) {
     this.theme.cellColor = params.cellColor || "#29ABE2";
     this.theme.cellColor2 = params.cellColor2 || "#29ABE2";
     this.theme.wordSearchColor = params.wordSearchColor || "#B8D6FB";
-    this.theme.wordHoverColor = params.wordHoverColor || "#4A831C";
+    this.theme.wordHoverColor = params.wordHoverColor || "#67E122";
     this.theme.wordFoundColor = params.wordFoundColor || "#008F8F";
     this.theme.wordWrongColor = params.wordWrongColor || "#FF4E4E";
     this.theme.spacerColor = params.spacerColor || "#FFFFFF";
@@ -70,23 +70,23 @@ Board.prototype.ShowTime = function(color) {
         this.context.fillStyle = color;
     else 
         this.context.fillStyle = "silver";
-    this.context.fillRect(this.width + this.delta, 0, 100, 60);
+    this.context.fillRect(this.width + this.delta, 0, 100, this.Scale(60));
 
-    cellTop = 40;
+    cellTop = this.Scale(40);
     cellLeft = this.width + this.delta + 20;
     
     timeElapsed = this.GetTimeElapsed();
     this.context.fillStyle = "black";
-    this.context.font = "32px bpg_mrgvlovani_caps_2010Rg";
+    this.context.font = this.Scale(32) + "px bpg_mrgvlovani_caps_2010Rg";
     this.context.fillText(timeElapsed, cellLeft, cellTop);
 };
 
 Board.prototype.DrawWords = function() {
     // draw table
     this.context.fillStyle = "silver";
-    this.context.fillRect(this.width + this.delta, 0, 200, this.height);
+    this.context.fillRect(this.width + this.delta, 0, 180, this.height);
 
-    cellTop = 100;
+    cellTop = this.Scale(100);
     cellLeft = this.width + this.delta + this.delta;
     
     for (index = 0; index < this.words.length; index++) {
@@ -95,7 +95,7 @@ Board.prototype.DrawWords = function() {
         else 
             this.context.fillStyle = "maroon";
         
-        this.context.font = "21px bpg_mrgvlovani_caps_2010Rg";
+        this.context.font = this.Scale(21) + "px bpg_mrgvlovani_caps_2010Rg";
         this.context.fillText(this.words[index], cellLeft, cellTop);
         
         if (this.wordsFound[index]) {
@@ -108,8 +108,12 @@ Board.prototype.DrawWords = function() {
             this.context.stroke();            
         }
         
-        cellTop += 40 + this.delta;
+        cellTop += this.Scale(40) + this.delta;
     }
+};
+
+Board.prototype.Scale = function(size) {
+    return Math.trunc(size * this.ratio);
 };
 
 Board.prototype.Draw = function() {
@@ -268,9 +272,9 @@ Board.prototype.WriteCellText = function(row, column) {
     cellLeft = this.delta + column * this.cellLength;
     
     this.context.fillStyle = this.theme.symbolColor;
-    this.context.font = "41px bpg_mrgvlovani_caps_2010Rg";
+    this.context.font = this.Scale(41) + "px bpg_mrgvlovani_caps_2010Rg";
     currentSymbol = this.GetSymbol(this.items[row].item[column]);
-    this.context.fillText(currentSymbol.text, cellLeft + currentSymbol.deltaLeft, cellTop + currentSymbol.deltaTop);
+    this.context.fillText(currentSymbol.text, cellLeft + this.Scale(currentSymbol.deltaLeft), cellTop + this.Scale(currentSymbol.deltaTop));
 };
 
 Board.prototype.GetSymbol = function(character) {
