@@ -19,17 +19,20 @@ public class Board {
     private int length;
     private Character[][] items;
     private List<String> words;
+    private int gameId;
 
     public Board() {
     }
     
-    public Board(int length, List<String> words) {
+    public Board(int length, List<String> words, int gameId) {
         this.items = null;
         this.length = length;
         this.words = words;
+        this.gameId = gameId;
+        fillBoard();
     }
 
-    public void fillBoard() {
+    private void fillBoard() {
         Random random = new Random();
         searchWordPlace(new Character[length][length], 0, random);
         fillEmptyPlaces(random);
@@ -37,9 +40,9 @@ public class Board {
     
     private void fillEmptyPlaces(Random random) {
         StringBuilder builder = new StringBuilder(SYMBOLS);
-        for (String word : words) {
+        words.stream().forEach((word) -> {
             builder.append(word);
-        }
+        });
         char[] symbols = builder.toString().toCharArray();
         for (int x = 0; x < length; x++) {
             for (int y = 0; y < length; y++) {
@@ -163,6 +166,14 @@ public class Board {
         this.words = words;
     }
 
+    public int getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
+    }
+    
 }
 
 class Combination {
@@ -208,10 +219,7 @@ class Combination {
         if (this.deltaX != other.deltaX) {
             return false;
         }
-        if (this.deltaY != other.deltaY) {
-            return false;
-        }
-        return true;
+        return this.deltaY == other.deltaY;
     }
 
 }

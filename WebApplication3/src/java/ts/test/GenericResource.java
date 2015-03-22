@@ -15,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import ts.games.words.core.Board;
 import ts.games.words.core.BoardItems;
+import ts.games.words.core.GameController;
 
 /**
  * REST Web Service
@@ -40,23 +41,6 @@ public class GenericResource {
     @GET
     @Produces("application/json")
     public BoardItems getJson() {
-        Board board = new Board(10, Arrays.asList("test", "tt", "track", "trance", "tortoise", "translate", "late", "tost", "task", "testing"));
-        board.fillBoard();
-        
-        if (board.getItems() != null) {
-            String[] array = new String[board.getLength()];
-            for (int index = 0; index < board.getLength(); index++) {
-                Character[] characters = board.getItems()[index];
-                char[] charArray = new char[board.getLength()];
-                for (int cIndex = 0; cIndex < board.getLength(); cIndex++) {
-                    charArray[cIndex] = characters[cIndex] == null ? '0' : (char)characters[cIndex];
-                }
-                array[index] = new String(charArray);
-            }
-            BoardItems items = new BoardItems();
-            items.setItems(array);
-            return items;
-        }
         return null;
     }
 
@@ -68,9 +52,8 @@ public class GenericResource {
     @Path("test2")
     @Produces("application/json")
     public Board getJson2() {
-        Board board = new Board(12, Arrays.asList("ლეოპარდი", "იაგუარი", "ვეფხვი", "ანტილოპა", "მგელი", "გიენა", "ლომი", "კურდღელი", "სპილო", "კატა"));
-        //Board board = new Board(12, Arrays.asList("ვეფხვი", "ვეფხვი", "ვეფხვი", "ვეფხვი", "ვეფხვი", "ვეფხვი", "ვეფხვი", "ვეფხვი", "ვეფხვი", "ვეფხვი"));
-        board.fillBoard();
+        //Board board = new Board(12, Arrays.asList("ლეოპარდი", "იაგუარი", "ვეფხვი", "ანტილოპა", "მგელი", "გიენა", "ლომი", "კურდღელი", "სპილო", "კატა"));
+        Board board = GameController.getCurrentInstance().startGame("1", 1, 12, 10);
         return board;
     }
     
