@@ -19,10 +19,19 @@ and open the template in the editor.
             var board;
             var canvas;
             var context;
+            var currentUserId;
             
-            function StartNewGame() {
+            function StartNewGame(categoryId) {
                 $("#result").hide();
                 
+                if (categoryId === undefined || categoryId === null)
+                    categoryId = 1;
+                startUrl = 
+                        "https://tsl-games.com:8181/WebApplication3/webresources/generic/start/"
+                        + currentUserId + "/" + categoryId;
+                bestTimeUrl = "https://tsl-games.com:8181/WebApplication3/webresources/generic/besttime/" 
+                        + currentUserId;
+                    
                 board = new Board(
                         {
                             "context": context, 
@@ -31,14 +40,22 @@ and open the template in the editor.
                             "rowCount": 12, 
                             "delta": 5,
                             "gameFinished": function(timeElapsed) {
-                                ShowResult(timeElapsed)
+                                endUrl = "https://tsl-games.com:8181/WebApplication3/webresources/generic/end/" 
+                                        + board.gameId;
+                                $.post( endUrl );
+                                ShowResult(timeElapsed);
                             }
                         });
 
-                $.get( "https://tsl-games.com:8181/WebApplication3/webresources/generic/test2", 
+                $.post( startUrl, 
                     function( data ) {
-                        board.FillItems(data.items, data.words);
+                        board.FillItems(data.gameId, data.items, data.words);
                         board.Draw();
+                    });
+                    
+                $.get( bestTimeUrl, 
+                    function( data ) {
+                        ShowBestTime(data);
                     });
             }
             
@@ -46,8 +63,21 @@ and open the template in the editor.
                 $("#score").html(score);
                 $("#result").show();
             }
-            
-            $(document).ready(function() {
+
+            function ShowBestTime(seconds) {
+                if (seconds === -1) 
+                    $("#best-time").hide();
+                else 
+                    $("#best-time").show();
+                time = Math.trunc(seconds / 60) + ":";
+                if (seconds % 60 < 10) {
+                    time += "0";
+                }
+                time += seconds % 60;
+                $("#best-time span").html(time);
+            }
+    
+            function initializeGame() {
                 canvas = document.getElementById("canvas");
                 context = canvas.getContext("2d");                
                 StartNewGame();
@@ -64,8 +94,30 @@ and open the template in the editor.
                     position = getMouse(e, canvas);
                     board.MoveTo(position.x, position.y);
                 });
-                
-            });
+            }
+            
+            function storePlayerData(data) {
+                playerData = 
+                        "playerId=" + data.id
+                        + "&firstName=" + data.first_name
+                        + "&lastName=" + data.last_name
+                        + "&name=" + data.name
+                        + "&gender=" + data.gender
+                        + "&email=" + data.email
+                        + "&verified=" + data.verified;
+                $.ajax({
+                    url: "https://tsl-games.com:8181/WebApplication3/webresources/generic/store",
+                    type: 'put',
+                    data: playerData,
+                    contentType: 'application/x-www-form-urlencoded',
+                    success: function(data) {
+                        //console.log("success ");
+                    },
+                    error: function(data) {
+                        console.log("error ", data.error);
+                    }
+                });
+            }
             
         </script>
         
@@ -79,9 +131,12 @@ and open the template in the editor.
 
             function onLogin(response) {
               if (response.status == 'connected') {
-                FB.api('/me?fields=first_name', function(data) {
+                FB.api('/me', function(data) {
                   var welcomeBlock = document.getElementById('fb-welcome');
                   welcomeBlock.innerHTML = 'Hello, ' + data.first_name + '!';
+                  storePlayerData(data);
+                  currentUserId = data.id;
+                  initializeGame();
                 });
               }
             }
@@ -114,16 +169,20 @@ and open the template in the editor.
     <body>
         <h4 style="font-family: bpg_mrgvlovani_caps_2010Rg; margin:4px 0px;" id="fb-welcome"></h4>
         <canvas id="canvas" width="730" height="600" style="margin:auto; display:block;"></canvas>
+        <h6 style="font-family: bpg_mrgvlovani_caps_2010Rg; margin:4px 0px;" id="best-time">თქვენი საუკეთესო დრო არის <span></span> წუთი</h6>
         <div id="result" style="display: none; position: absolute; left: 0px; top: 0px; width: 100%; height:100%; ">
             <div style="position: relative; width: 100%; height:100%;">
-                <div style="width: 100%; height:100%; background: silver; opacity: 0.6; z-index: 1;">
+                <div style="width: 100%; height:750px; background: silver; opacity: 0.6; z-index: 1;">
                 </div>
-                <div style="position: absolute; top:250px; left:50%; margin-left: -100px; 
-                     height: 100px; width: 200px; z-index: 2; background: white;">
-                    <div style="text-align: center; margin-top: 20px;">Your Time is</div>
-                    <div id="score" style="text-align: center">0</div>
-                    <div style="text-align: center;">
-                        <input type="button" value="Start new Game" onclick="StartNewGame()" />
+                <div style="position: absolute; top:250px; left:50%; margin-left: -150px; 
+                     height: 100px; width: 300px; z-index: 2; background: white;">
+                    <div style="text-align: center; margin-top: 20px;">
+                        ყველა სიტყვის მოსაძებნათ თქვენ დაგჭირდათ
+                        <span id="score" style="text-align: center">0</span>
+                        წუთი
+                    </div>
+                    <div style="text-align: center; margin-top: 2px;">
+                        <input type="button" value="ახალი თამაშის დაწყება" onclick="StartNewGame()" />
                     </div>
                 </div>
             </div>

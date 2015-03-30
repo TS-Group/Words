@@ -34,11 +34,13 @@ var Board = function(params) {
     this.startTime = null;
     this.endTime = null;
     this.isGameFinished = false;
+    this.gameId = null;
 };
 
-Board.prototype.FillItems = function(board, words) {
+Board.prototype.FillItems = function(gameId, board, words) {
     this.items = board;
     this.words = words;
+    this.gameId = gameId;
 
     for (index = 0; index < this.words.length; index++) {
         this.wordsFound[index] = false;

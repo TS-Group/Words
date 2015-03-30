@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/lasha/Source/Repos/Words/WebApplication3/src/java/ts/test/GenericResource.java</file>
+            <file>file:/C:/Users/lasha/Source/Repos/Words/WebApplication3/src/java/ts/games/words/core/GameController.java</file>
+            <file>file:/C:/Users/lasha/Source/Repos/Words/WebApplication3/src/java/ts/games/words/core/Board.java</file>
+            <file>file:/C:/Users/lasha/Source/Repos/Words/WebApplication3/src/java/ts/games/words/core/Category.java</file>
+            <file>file:/C:/Users/lasha/Source/Repos/Words/WebApplication3/src/java/ts/games/words/core/DataBaseHelper.java</file>
+            <file>file:/C:/Users/lasha/Source/Repos/Words/WebApplication3/src/java/ts/games/words/core/PlayerController.java</file>
+            <file>file:/C:/Users/lasha/Source/Repos/Words/WebApplication3/src/java/ts/games/words/core/Player.java</file>
+        </group>
     </open-files>
 </project-private>
